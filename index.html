@@ -87,6 +87,13 @@
     #summary li {
       margin-bottom: 10px;
     }
+    #loading {
+      display: none;
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #000;
+    }
   </style>
 </head>
 <body>
@@ -133,6 +140,9 @@
   <button type="submit">Kirim Absen</button>
 </form>
 
+<!-- Loading indikator -->
+<div id="loading">⏳ Proses, mohon tunggu sebentar...</div>
+
 <div id="summary">
   <h2>✅ Absen berhasil dikirim!</h2>
   <ul id="summaryList"></ul>
@@ -176,6 +186,7 @@
   document.querySelector("form").addEventListener("submit", function(e) {
     e.preventDefault();
     setCurrentTime();
+    document.getElementById("loading").style.display = "block"; // Tampilkan loading
 
     const form = e.target;
     const data = new FormData(form);
@@ -196,6 +207,7 @@
     .then(response => response.text())
     .then(result => {
       document.getElementById("absenForm").style.display = "none";
+      document.getElementById("loading").style.display = "none"; // Sembunyikan loading
       const summary = document.getElementById("summary");
       const list = document.getElementById("summaryList");
       list.innerHTML = `
@@ -210,6 +222,7 @@
       summary.style.display = "block";
     })
     .catch(error => {
+      document.getElementById("loading").style.display = "none"; // Sembunyikan loading saat error
       alert("❌ Gagal mengirim absen. Silakan coba lagi.");
     });
   });
