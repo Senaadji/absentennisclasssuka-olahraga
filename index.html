@@ -97,21 +97,28 @@
   <label for="tanggal">Tanggal:</label>
   <input id="tanggal" name="tanggal" readonly type="date"/>
   <input id="jam" name="jam" readonly type="hidden"/>
+
   <label for="name">Nama:</label>
   <input id="name" name="name" required type="text"/>
+
   <label for="kategori">Kategori:</label>
-  <select id="kategori" name="kategori">
+  <select id="kategori" name="kategori" required>
+    <option value="" disabled selected hidden>-- Pilih Kategori --</option>
     <option value="Private">Private</option>
     <option value="Group">Group</option>
   </select>
+
   <label for="level">Level Kelas:</label>
-  <select id="level" name="level">
+  <select id="level" name="level" required>
+    <option value="" disabled selected hidden>-- Pilih Level --</option>
     <option value="Beginner">Beginner</option>
     <option value="Intermediate">Intermediate</option>
     <option value="Advance">Advance</option>
   </select>
+
   <label for="lapangan">Nomor Lapangan:</label>
-  <select id="lapangan" name="lapangan">
+  <select id="lapangan" name="lapangan" required>
+    <option value="" disabled selected hidden>-- Pilih Lapangan --</option>
     <option value="1">1</option>
     <option value="2">2</option>
     <option value="3">3</option>
@@ -119,11 +126,10 @@
     <option value="5">5</option>
     <option value="6">6</option>
   </select>
-  <label for="kehadiran">Kehadiran:</label>
-  <select id="kehadiran" name="kehadiran">
-    <option value="Hadir">Hadir</option>
-    <option value="Tidak Hadir">Tidak Hadir</option>
-  </select>
+
+  <!-- Kehadiran otomatis Hadir -->
+  <input type="hidden" id="kehadiran" name="kehadiran" value="Hadir"/>
+
   <button type="submit">Kirim Absen</button>
 </form>
 
@@ -180,7 +186,7 @@
       kategori: form.kategori.value,
       level: form.level.value,
       lapangan: form.lapangan.value,
-      kehadiran: form.kehadiran.value
+      kehadiran: "Hadir"
     };
 
     fetch(form.action, {
@@ -199,7 +205,7 @@
         <li><strong>Kategori:</strong> ${formData.kategori}</li>
         <li><strong>Level:</strong> ${formData.level}</li>
         <li><strong>Lapangan:</strong> ${formData.lapangan}</li>
-        <li><strong>Kehadiran:</strong> ${formData.kehadiran}</li>
+        <li><strong>Kehadiran:</strong> Hadir</li>
       `;
       summary.style.display = "block";
     })
