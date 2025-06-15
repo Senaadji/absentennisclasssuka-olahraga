@@ -7,24 +7,26 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #ffffff;
-      color: #000000;
+      background-color: #fff;
+      color: #000;
       margin: 0;
       padding: 20px;
     }
     h1 {
       text-align: center;
-      background-color: #000000;
-      color: #ffffff;
+      background-color: #000;
+      color: #fff;
       padding: 15px 0;
       margin-bottom: 10px;
+      border-radius: 10px;
     }
     #clock {
       text-align: center;
       font-size: 18px;
       margin-bottom: 30px;
+      font-weight: bold;
     }
-    form {
+    form, #summary {
       max-width: 600px;
       margin: 0 auto;
     }
@@ -38,7 +40,8 @@
       padding: 10px;
       margin-bottom: 20px;
       border: 1px solid #000;
-      border-radius: 4px;
+      border-radius: 6px;
+      background-color: #fff;
     }
     button {
       width: 100%;
@@ -46,7 +49,7 @@
       background-color: #000;
       color: #fff;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
     }
@@ -69,16 +72,15 @@
       text-decoration: underline;
     }
     #summary {
-      max-width: 600px;
-      margin: 30px auto;
-      background-color: #e6ffe6;
-      border: 1px solid #25D366;
+      background-color: #f9f9f9;
+      border: 1px solid #000;
       border-radius: 10px;
       padding: 20px;
       display: none;
     }
     #summary h2 {
-      color: #25D366;
+      color: #000;
+      text-align: center;
     }
     #summary ul {
       list-style: none;
@@ -97,135 +99,132 @@
   </style>
 </head>
 <body>
-<h1>SUKA OLAHRAGA Absen Tennis Class</h1>
-<div id="clock"></div>
+  <h1>SUKA OLAHRAGA Absen Tennis Class</h1>
+  <div id="clock"></div>
 
-<form id="absenForm" action="https://script.google.com/macros/s/AKfycbxan-EFwA0qFgoIEOKJkI6DCX1Zl_MX92tdwZ-x_0_iCZzHRTwesLSiqgEizwyNjdaHoQ/exec" method="POST" onsubmit="return setCurrentTime();">
-  <label for="tanggal">Tanggal:</label>
-  <input id="tanggal" name="tanggal" readonly type="date"/>
-  <input id="jam" name="jam" readonly type="hidden"/>
+  <form id="absenForm" action="https://script.google.com/macros/s/AKfycbxan-EFwA0qFgoIEOKJkI6DCX1Zl_MX92tdwZ-x_0_iCZzHRTwesLSiqgEizwyNjdaHoQ/exec" method="POST" onsubmit="return setCurrentTime();">
+    <label for="tanggal">Tanggal:</label>
+    <input id="tanggal" name="tanggal" readonly type="date"/>
+    <input id="jam" name="jam" readonly type="hidden"/>
 
-  <label for="name">Nama:</label>
-  <input id="name" name="name" required type="text"/>
+    <label for="name">Nama:</label>
+    <input id="name" name="name" required type="text"/>
 
-  <label for="kategori">Kategori:</label>
-  <select id="kategori" name="kategori" required>
-    <option value="" disabled selected hidden>-- Pilih Kategori --</option>
-    <option value="Private">Private</option>
-    <option value="Group">Group</option>
-  </select>
+    <label for="kategori">Kategori:</label>
+    <select id="kategori" name="kategori" required>
+      <option value="" disabled selected hidden>-- Pilih Kategori --</option>
+      <option value="Private">Private</option>
+      <option value="Group">Group</option>
+    </select>
 
-  <label for="level">Level Kelas:</label>
-  <select id="level" name="level" required>
-    <option value="" disabled selected hidden>-- Pilih Level --</option>
-    <option value="Beginner">Beginner</option>
-    <option value="Intermediate">Intermediate</option>
-    <option value="Advance">Advance</option>
-  </select>
+    <label for="level">Level Kelas:</label>
+    <select id="level" name="level" required>
+      <option value="" disabled selected hidden>-- Pilih Level --</option>
+      <option value="Beginner">Beginner</option>
+      <option value="Intermediate">Intermediate</option>
+      <option value="Advance">Advance</option>
+    </select>
 
-  <label for="lapangan">Nomor Lapangan:</label>
-  <select id="lapangan" name="lapangan" required>
-    <option value="" disabled selected hidden>-- Pilih Lapangan --</option>
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-    <option value="6">6</option>
-  </select>
+    <label for="lapangan">Nomor Lapangan:</label>
+    <select id="lapangan" name="lapangan" required>
+      <option value="" disabled selected hidden>-- Pilih Lapangan --</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
 
-  <!-- Kehadiran otomatis Hadir -->
-  <input type="hidden" id="kehadiran" name="kehadiran" value="Hadir"/>
+    <input type="hidden" id="kehadiran" name="kehadiran" value="Hadir"/>
+    <button type="submit">Kirim Absen</button>
+  </form>
 
-  <button type="submit">Kirim Absen</button>
-</form>
+  <div id="loading">⏳ Proses, mohon tunggu sebentar...</div>
 
-<!-- Loading indikator -->
-<div id="loading">⏳ Proses, mohon tunggu sebentar...</div>
+  <div id="summary">
+    <h2>✅ Absen berhasil dikirim!</h2>
+    <ul id="summaryList"></ul>
+  </div>
 
-<div id="summary">
-  <h2>✅ Absen berhasil dikirim!</h2>
-  <ul id="summaryList"></ul>
-</div>
+  <div class="contact-info">
+    <p>
+      Follow IG:
+      <a href="https://instagram.com/Sukaolahraga__" target="_blank">@Sukaolahraga_</a> |
+      <a href="https://instagram.com/Event_Sukaolahraga" target="_blank">@Event_Sukaolahraga</a>
+    </p>
+    <p>
+      WhatsApp Admin: <a href="https://wa.me/6285608316100" target="_blank">0856-0831-6100</a>
+    </p>
+  </div>
 
-<div class="contact-info">
-  <p>
-    Follow IG: 
-    <a href="https://instagram.com/Sukaolahraga__" target="_blank">@Sukaolahraga_</a> |
-    <a href="https://instagram.com/Event_Sukaolahraga" target="_blank">@Event_Sukaolahraga</a>
-  </p>
-  <p>
-    WhatsApp Admin: <a href="https://wa.me/6285608316100" target="_blank">0856-0831-6100</a>
-  </p>
-</div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const today = new Date().toISOString().split("T")[0];
-    document.getElementById("tanggal").value = today;
-    updateClock();
-  });
-
-  function updateClock() {
-    const now = new Date();
-    const jam = now.getHours().toString().padStart(2, '0');
-    const menit = now.getMinutes().toString().padStart(2, '0');
-    const detik = now.getSeconds().toString().padStart(2, '0');
-    document.getElementById('clock').textContent = `Waktu Sekarang: ${jam}:${menit}:${detik}`;
-    setTimeout(updateClock, 1000);
-  }
-
-  function setCurrentTime() {
-    const now = new Date();
-    const jam = now.getHours().toString().padStart(2, '0');
-    const menit = now.getMinutes().toString().padStart(2, '0');
-    document.getElementById('jam').value = `${jam}:${menit}`;
-    return true;
-  }
-
-  document.querySelector("form").addEventListener("submit", function(e) {
-    e.preventDefault();
-    setCurrentTime();
-    document.getElementById("loading").style.display = "block"; // Tampilkan loading
-
-    const form = e.target;
-    const data = new FormData(form);
-    const formData = {
-      nama: form.name.value,
-      tanggal: form.tanggal.value,
-      jam: document.getElementById("jam").value,
-      kategori: form.kategori.value,
-      level: form.level.value,
-      lapangan: form.lapangan.value,
-      kehadiran: "Hadir"
-    };
-
-    fetch(form.action, {
-      method: "POST",
-      body: data
-    })
-    .then(response => response.text())
-    .then(result => {
-      document.getElementById("absenForm").style.display = "none";
-      document.getElementById("loading").style.display = "none"; // Sembunyikan loading
-      const summary = document.getElementById("summary");
-      const list = document.getElementById("summaryList");
-      list.innerHTML = `
-        <li><strong>Nama:</strong> ${formData.nama}</li>
-        <li><strong>Tanggal:</strong> ${formData.tanggal}</li>
-        <li><strong>Jam:</strong> ${formData.jam}</li>
-        <li><strong>Kategori:</strong> ${formData.kategori}</li>
-        <li><strong>Level:</strong> ${formData.level}</li>
-        <li><strong>Lapangan:</strong> ${formData.lapangan}</li>
-        <li><strong>Kehadiran:</strong> Hadir</li>
-      `;
-      summary.style.display = "block";
-    })
-    .catch(error => {
-      document.getElementById("loading").style.display = "none"; // Sembunyikan loading saat error
-      alert("❌ Gagal mengirim absen. Silakan coba lagi.");
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const today = new Date().toISOString().split("T")[0];
+      document.getElementById("tanggal").value = today;
+      updateClock();
     });
-  });
-</script>
+
+    function updateClock() {
+      const now = new Date();
+      const jam = now.getHours().toString().padStart(2, '0');
+      const menit = now.getMinutes().toString().padStart(2, '0');
+      const detik = now.getSeconds().toString().padStart(2, '0');
+      document.getElementById('clock').textContent = `Waktu Sekarang: ${jam}:${menit}:${detik}`;
+      setTimeout(updateClock, 1000);
+    }
+
+    function setCurrentTime() {
+      const now = new Date();
+      const jam = now.getHours().toString().padStart(2, '0');
+      const menit = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('jam').value = `${jam}:${menit}`;
+      return true;
+    }
+
+    document.querySelector("form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      setCurrentTime();
+      document.getElementById("loading").style.display = "block";
+
+      const form = e.target;
+      const data = new FormData(form);
+      const formData = {
+        nama: form.name.value,
+        tanggal: form.tanggal.value,
+        jam: document.getElementById("jam").value,
+        kategori: form.kategori.value,
+        level: form.level.value,
+        lapangan: form.lapangan.value,
+        kehadiran: "Hadir"
+      };
+
+      fetch(form.action, {
+        method: "POST",
+        body: data
+      })
+      .then(response => response.text())
+      .then(result => {
+        form.reset();
+        document.getElementById("loading").style.display = "none";
+        const summary = document.getElementById("summary");
+        const list = document.getElementById("summaryList");
+        list.innerHTML = `
+          <li><strong>Nama:</strong> ${formData.nama}</li>
+          <li><strong>Tanggal:</strong> ${formData.tanggal}</li>
+          <li><strong>Jam:</strong> ${formData.jam}</li>
+          <li><strong>Kategori:</strong> ${formData.kategori}</li>
+          <li><strong>Level:</strong> ${formData.level}</li>
+          <li><strong>Lapangan:</strong> ${formData.lapangan}</li>
+          <li><strong>Kehadiran:</strong> Hadir</li>
+        `;
+        summary.style.display = "block";
+      })
+      .catch(error => {
+        document.getElementById("loading").style.display = "none";
+        alert("❌ Gagal mengirim absen. Silakan coba lagi.");
+      });
+    });
+  </script>
 </body>
 </html>
